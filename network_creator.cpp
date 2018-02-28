@@ -22,13 +22,15 @@ protected:
     virtual void connect_network(Network * net) {
         int n = net->a_count;
         Atom ** arr = net->atoms;
+        float dist = pow2(max_connection_dist);
+
         for (int x = 0; x < n; x++ ) {
             Atom * tmp = arr[x];
             tmp->neighbors = new Atom*[n];
             int n_count = 0;
    
             for (int y = x; y < n; y++) {
-                if (Network::dist2(tmp, arr[y]) < max_connection_dist) {
+                if (Network::dist2(tmp, arr[y]) < dist) {
                     tmp->neighbors[n_count++] = arr[y];
                 }
             }
