@@ -3,6 +3,13 @@
 #include <stdint.h>
 #include "rng.cpp"
 
+struct AtomIParams {
+    const int protons;
+    const int electrons;
+    const int free_space;
+    const float x, y;
+};
+
     // dont want to create Electron class, it would be too much.. 
 class Atom {
     static inline int get_d_value(const Atom & a, int min) { return a.charge() - min; } // this scales charges between 0 and max 
@@ -69,9 +76,10 @@ public:
     }
 
 public:
-    Atom(int protons_, int electrons_, int free_space_, float x_, float y_) : protons(protons_), electrons(electrons_), free_space(free_space_), x(x_), y(y_) {}
+    Atom(AtomIParams p) : protons(p.protons), electrons(p.electrons), free_space(p.free_space), x(p.x), y(p.y) {}
     ~Atom();
 };
+
 
 
 class Network {
