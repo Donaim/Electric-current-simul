@@ -5,15 +5,23 @@
 #include <stdint.h>
 #include <iostream>
 
-struct AtomIParams {
+struct AtomBase {
     int protons;
     int electrons;
-    int free_space;
+    inline int charge() const { return +protons -electrons; }
+
+    // float acceptance = 1.0f; // represents 'will' to accept new electrons. the lower this value is, the less probable it is for atom to accept new electrons
+    int free_space; // primitive alternative to 'acceptance'. probability of acceptance here is 0% if free_space == 0, or 100% if free_space > 0
+    int max_free_space;
+
     float x, y;
 };
 
     // dont want to create Electron class, it would be too much.. 
-class Atom {
+class Atom : protected AtomBase {
+    friend class Network;
+    friend class ConnectedNetwork;
+    
     static inline int get_d_value(const Atom & a, int min) { return a.charge() - min; } // this scales charges between 0 and max 
     static inline int get_min_d_value(Atom ** const atoms, int n, const Atom & me) {
         int m = INT32_MAX;
@@ -63,20 +71,10 @@ class Atom {
         int r = rand_0_max(sum); 
         move_electron(r, min); // direction is chosen based on random waged distribution
     }
-public:
+private:
     Atom ** neighbors = nullptr; // adresses of neighbor atoms. it's with them electron exchange is happening
     int n_count = 0;
-
-    // float acceptance = 1.0f; // represents 'will' to accept new electrons. the lower this value is, the less probable it is for atom to accept new electrons
-    int free_space; // primitive alternative to 'acceptance'. probability of acceptance here is 0% if free_space == 0, or 100% if free_space > 0
-    const int max_free_space;
-
-    const int protons;
-    int electrons;
-    inline int charge() const { return +protons -electrons; }
-
-    const float x, y; // physical position of atom in 2d space
-
+public:
     void turn() { // make a turn, or pass
         for (int c = charge(); c < 0; c++) { // if there is excess of electrons, they move to atom which has less of them
             share_electron();
@@ -84,7 +82,7 @@ public:
     }
 
 public:
-    Atom(AtomIParams p) : protons(p.protons), electrons(p.electrons), max_free_space(p.free_space), free_space(p.free_space), x(p.x), y(p.y) {}
+    Atom(AtomBase b) : AtomBase(b) {}
     ~Atom();
     friend std::ostream& operator << (std::ostream& os, const Atom& o);
 };

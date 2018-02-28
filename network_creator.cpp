@@ -11,7 +11,7 @@ class NCreator {
 protected:
     NCreator() : collection{1000} {}
 public:
-    virtual AtomIParams gen_rand(Shape&) = 0;
+    virtual AtomBase gen_rand(Shape&) = 0;
     void add_part(Shape & sh, float density) {
         int size = sh.area() * density;
         for (int i = 0; i < size; i++) {
@@ -41,11 +41,11 @@ public:
     int electrons_dev = 3;
     int free_space_max = 10;
 
-    virtual AtomIParams gen_rand(Shape& sh) {
+    virtual AtomBase gen_rand(Shape& sh) {
         const RectangleF* working_rec = dynamic_cast<const RectangleF*>(&sh);
         if(!working_rec) { throw std::runtime_error("Dont know how to handle this shape"); } 
 
-        AtomIParams re{};
+        AtomBase re{};
 
         re.x = rand_min_max(working_rec->x, working_rec->x + working_rec->Width);
         re.y = rand_min_max(working_rec->y, working_rec->y + working_rec->Height);
@@ -53,7 +53,7 @@ public:
         re.protons      = rand_i_min_max(protons_avg - protons_dev  , protons_avg + protons_dev  );
         re.electrons    = rand_i_min_max(protons_avg - electrons_dev, protons_avg + electrons_dev);
         
-        re.free_space = rand_i_0_max(free_space_max);
+        re.max_free_space = re.free_space = rand_i_0_max(free_space_max);
 
         return re;
     }
