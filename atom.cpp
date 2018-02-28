@@ -5,22 +5,24 @@
     // dont want to create Electron class, it would be too much.. 
 class Atom {
     static inline int get_d_value(const Atom & a, int min) { return a.charge() + min; } 
-    static inline int get_min_d_value(Atom ** const atoms, int n) {
+    static inline int get_min_d_value(Atom ** const atoms, int n, const Atom & me) {
         int m = INT32_MAX;
         for (int i = 0; i < n; i++) {
             Atom &a = (*atoms[i]);
             if (a.free_space < 1) { continue; }
             if (a.charge() < m) { m = a.charge(); }
         }
+        if (me.charge() < m) { m = me.charge(); } // origin atom also counts
         return m;
     }
-    static inline int get_d_value_sum(Atom ** const atoms, int n, int min) {
+    static inline int get_d_value_sum(Atom ** const atoms, int n, int min, const Atom & me) {
         int sum = 0;
         for (int i = 0; i < n; i++) {
             Atom &a = (*atoms[i]);
             if (a.free_space < 1) { continue; }
             sum += Atom::get_d_value(a, min);
         }
+        sum += Atom::get_d_value(me, min); // origin atom also counts
         return sum;
     }
     void move_electron(int d_rand, int min) {
@@ -32,16 +34,16 @@ class Atom {
             sum += Atom::get_d_value(a, min);
             if (sum >= d_rand) 
             {
-                this->electrons--; 
+                this->electrons--;
                 a.electrons++; // so the actual movement looks like this... 
                 return;
             }
         }
+        // there is probability, that electron will stay home. that is because we have added home's d_value to the sum, and it is greather than the sum of only neighboring atoms
     }
     void share_electron() {
-        int min = Atom::get_min_d_value(neighbors, n_count);
-        int sum = Atom::get_d_value_sum(neighbors, n_count, min);
-        sum += Atom::get_d_value(*this, min); // there is probability that electron will stay home.
+        int min = Atom::get_min_d_value(neighbors, n_count, *this);
+        int sum = Atom::get_d_value_sum(neighbors, n_count, min, *this);
 
         int r = rand_0_max(sum); 
         move_electron(r, min); // direction is chosen based on random waged distribution
@@ -55,9 +57,9 @@ public:
     
     int protons = 0;
     int electrons = 0;
-    inline int charge() const { return protons - electrons; }
+    inline int charge() const { return +protons -electrons; }
 
-    float x = -1, y = -1;
+    const float x, y; // physical position of atom in 2d space
 
     void turn() { // make a turn, or pass
         for (int c = charge(); c < 0; c++) { // if there is excess of electrons, they move to atom which has less of them
