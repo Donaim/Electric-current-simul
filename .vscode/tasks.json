@@ -22,7 +22,12 @@
             "label": "run",
             "dependsOn": "build",
             "type": "shell",
-            "command": ".\\a.exe", 
+            "linux": {
+                "command": "./a.out"
+            },
+            "windows": {
+                "command": ".\\a.exe", 
+            },
             "group": {
                 "kind": "build",
                 "isDefault": true
