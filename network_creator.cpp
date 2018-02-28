@@ -21,8 +21,10 @@ struct RectangleF : public Shape {
 
 
 class NCreator {
-    std::vector<Atom*> collection;
+    SList<Atom*> collection;
 protected:
+    NCreator() : collection{1000} {}
+
     virtual void connect_network(Network * net) {
         int n = net->a_count;
         Atom ** arr = net->atoms;
@@ -60,11 +62,11 @@ public:
     }
     Network& finish() {
         Network * re = new Network{};
-        re->atoms = create_arr(&collection[0], collection.size());
+        re->atoms = collection.source();
         re->a_count = collection.size();
         connect_network(re);
 
-        collection.clear();
+        collection.forget_and_alloc_new(10);
         
         return *re;
     }
