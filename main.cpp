@@ -8,7 +8,10 @@ using namespace std;
 
 int main() {
 
-    cout << "Hello" << endl;
+    SimpleCreator sc{};
+    Shape& sh = *new RectangleF{0, 0, 100, 100};
+    SimpleCreator::create_solid_random_network(sc, sh, 200);
 
+    cout << "end" << endl;
     return 0;
 }
