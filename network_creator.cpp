@@ -3,11 +3,16 @@
 #include "atom.cpp"
 #include "rng.cpp"
 #include <vector>
+#include <stdexcept>
 
-struct Shape { };
+struct Shape { 
+    virtual float area() const = 0;
+};
 struct RectangleF : public Shape {
     float x; float y;
     float Width; float Height;
+
+    virtual float area() const override { return Width * Height; }
 };
 
 class NCreator {
@@ -33,10 +38,10 @@ protected:
 public:
     float max_connection_dist = 10;
 public:
-    virtual AtomIParams gen_rand() = 0;
-    void add_part(int size) {
+    virtual AtomIParams gen_rand(Shape&) = 0;
+    void add_part(int size, Shape & sh) {
         for (int i = 0; i < size; i++) {
-            collection.push_back(new Atom( gen_rand() ));
+            collection.push_back(new Atom( gen_rand(sh) ));
         }
     }
     Network finish() {
@@ -50,12 +55,12 @@ public:
         return *re;
     }
 public:
-    static Network create_solid_random_network(NCreator& creator, int size) {
+    static Network create_solid_random_network(NCreator& creator, Shape& sh, int size) {
         Network * re = new Network{};
         re->atoms = new Atom*[size];
 
         for (int i = 0; i < size; i++) {
-            re->atoms[i] = new Atom( creator.gen_rand()  );
+            re->atoms[i] = new Atom( creator.gen_rand(sh)  );
         }
         creator.connect_network(re);
         
@@ -70,11 +75,14 @@ public:
     int electrons_dev = 3;
     int free_space_max = 10;
 
-    virtual AtomIParams gen_rand() {
+    virtual AtomIParams gen_rand(Shape& sh) {
+        const RectangleF* working_rec = dynamic_cast<const RectangleF*>(&sh);
+        if(!working_rec) { throw std::runtime_error("Dont know how to handle this shape"); } 
+
         AtomIParams re{};
 
-        re.x = rand_min_max(working_rec.x, working_rec.x + working_rec.Width);
-        re.y = rand_min_max(working_rec.y, working_rec.y + working_rec.Height);
+        re.x = rand_min_max(working_rec->x, working_rec->x + working_rec->Width);
+        re.y = rand_min_max(working_rec->y, working_rec->y + working_rec->Height);
 
         re.protons      = rand_i_min_max(protons_avg - protons_dev  , protons_avg + protons_dev  );
         re.electrons    = rand_i_min_max(protons_avg - electrons_dev, protons_avg + electrons_dev);
