@@ -4,10 +4,10 @@
 #include "rng.cpp"
 
 struct AtomIParams {
-    const int protons;
-    const int electrons;
-    const int free_space;
-    const float x, y;
+    int protons;
+    int electrons;
+    int free_space;
+    float x, y;
 };
 
     // dont want to create Electron class, it would be too much.. 
