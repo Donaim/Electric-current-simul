@@ -19,59 +19,30 @@ struct RectangleF : public Shape {
 };
 
 
-
 class NCreator {
     SList<Atom*> collection;
 protected:
     NCreator() : collection{1000} {}
-
-    virtual void connect_network(Network * net) {
-        int n = net->a_count;
-        Atom ** arr = net->atoms;
-        float dist = pow2(max_connection_dist);
-
-        float avg_neighbors = 10; // helps with allocation
-        SList<Atom*> list(avg_neighbors);
-
-        for (int x = 0; x < n; x++ ) {
-            Atom * tmp = arr[x];
-            list.forget_and_alloc_new((int)avg_neighbors + 17);
-   
-            for (int y = 0; y < n; y++) {
-                if (Network::dist2(tmp, arr[y]) < dist) {
-                    list.push_back(arr[y]);
-                }
-            }
-   
-            tmp->neighbors = list.source();
-            tmp->n_count = list.size();
-            avg_neighbors = (avg_neighbors * (x) + list.size()) / (float)(x + 1);
-            
-        }
-        
-        std::cout << "avg network connections: " << avg_neighbors << std::endl;
-    }
-public:
-    float max_connection_dist = 10;
 public:
     virtual AtomIParams gen_rand(Shape&) = 0;
-    void add_part(Shape & sh, int size) {
+    void add_part(Shape & sh, float density) {
+        int size = sh.area() * density;
         for (int i = 0; i < size; i++) {
             collection.push_back(new Atom( gen_rand(sh) ));
         }
     }
-    Network& finish() {
-        Network * re = new Network{};
-        re->atoms = collection.source();
-        re->a_count = collection.size();
-        connect_network(re);
+    ConnectedNetwork& finish() {
+        Network init{};
+        init.atoms = collection.source();
+        init.a_count = collection.size();
+        ConnectedNetwork * re = new ConnectedNetwork{init};
 
         collection.forget_and_alloc_new(10);
         
         return *re;
     }
-    Network& create_solid_random_network(Shape& sh, int size) {
-        this->add_part(sh, size);
+    ConnectedNetwork& create_solid_random_network(Shape& sh, float density) {
+        this->add_part(sh, density);
         return this->finish();
     }
 };

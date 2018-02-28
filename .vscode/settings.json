@@ -3,6 +3,7 @@
         "system_error": "cpp",
         "xtr1common": "cpp",
         "limits": "cpp",
-        "cmath": "cpp"
+        "cmath": "cpp",
+        "*.tcc": "cpp"
     }
 }

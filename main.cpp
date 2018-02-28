@@ -25,8 +25,8 @@ void test_list() {
 int main() {
     // srand(time(0));
 
-    Shape& sh = *new RectangleF{0, 0, 30, 30};
-    Network nt = SimpleCreator{}.create_solid_random_network(sh, 10000);
+    Shape& sh = *new RectangleF{0, 0, 10, 10};
+    ConnectedNetwork nt = SimpleCreator{}.create_solid_random_network(sh, 10);
     cout << "network connected!" << endl;
 
     // cout << nt << endl;

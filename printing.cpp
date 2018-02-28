@@ -7,7 +7,7 @@ ostream& operator << (ostream& os, const Atom& o){
     return os;
 }
 
-ostream& operator << (ostream& os, const Network& o){
+ostream& operator << (ostream& os, const ConnectedNetwork& o){
     for (int i = 0; i < o.a_count; i++) {
         os << *o.atoms[i] << ' ';
     }
