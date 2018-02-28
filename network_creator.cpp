@@ -1,6 +1,7 @@
 #pragma once
 
 #include "atom.cpp"
+#include "network.cpp"
 #include "rng.cpp"
 #include "network_creator_shapes.cpp"
 #include <stdexcept>

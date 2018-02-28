@@ -1,6 +1,9 @@
 #pragma once
 
 #include "atom.cpp"
+#include "network.cpp"
+
+using std::ostream;
 
 ostream& operator << (ostream& os, const Atom& o){
     os << "O" ;
