@@ -1,6 +1,7 @@
 
 #include "atom.cpp"
 #include "network_creator.cpp"
+#include "helpers.cpp"
 #include <iostream>
 
 using namespace std;

@@ -1,7 +1,9 @@
 #pragma once
 
-#include <stdint.h>
 #include "rng.cpp"
+#include "helpers.cpp"
+#include <stdint.h>
+#include <cmath>
 
 struct AtomIParams {
     int protons;
@@ -93,6 +95,7 @@ public:
     Atom ** atoms = nullptr;
     int a_count = 0;
 
+    static inline float dist2(Atom * a, Atom * b) { return pow2(a->x - b->x) + pow2(a->y - b->y); } // distance squared
     ~Network();
 };
 

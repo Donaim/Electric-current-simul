@@ -4,7 +4,8 @@
 #include "rng.cpp"
 #include <vector>
 
-struct RectangleF {
+struct Shape { };
+struct RectangleF : public Shape {
     float x; float y;
     float Width; float Height;
 };
@@ -12,26 +13,43 @@ struct RectangleF {
 class NCreator {
     std::vector<Atom*> collection;
 protected:
-    NCreator() : working_rec{0, 0, 100, 100} { }
-    NCreator(RectangleF wr) : working_rec{wr} {}
+    virtual void connect_network(Network * net) {
+        int n = net->a_count;
+        Atom ** arr = net->atoms;
+        for (int x = 0; x < n; x++ ) {
+            Atom * tmp = arr[x];
+            tmp->neighbors = new Atom*[n];
+            int n_count = 0;
+   
+            for (int y = x; y < n; y++) {
+                if (Network::dist2(tmp, arr[y]) < max_connection_dist) {
+                    tmp->neighbors[n_count++] = arr[y];
+                }
+            }
+   
+            tmp->n_count = n_count;
+        }
+    }
 public:
-    const RectangleF working_rec;
+    float max_connection_dist = 10;
+public:
     virtual AtomIParams gen_rand() = 0;
-    virtual void add_part(int size) {
+    void add_part(int size) {
         for (int i = 0; i < size; i++) {
             collection.push_back(new Atom( gen_rand() ));
         }
     }
-    virtual Network finish() {
+    Network finish() {
         Network * re = new Network{};
         re->atoms = &collection[0];
         re->a_count = collection.size();
+        connect_network(re);
 
         collection = std::vector<Atom*>{}; // dont care about memory
         
         return *re;
     }
-
+public:
     static Network create_solid_random_network(NCreator& creator, int size) {
         Network * re = new Network{};
         re->atoms = new Atom*[size];
@@ -39,7 +57,8 @@ public:
         for (int i = 0; i < size; i++) {
             re->atoms[i] = new Atom( creator.gen_rand()  );
         }
-
+        creator.connect_network(re);
+        
         return *re;
     }
 };
