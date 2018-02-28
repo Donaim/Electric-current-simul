@@ -42,7 +42,7 @@ public:
     float max_connection_dist = 10;
 public:
     virtual AtomIParams gen_rand(Shape&) = 0;
-    void add_part(int size, Shape & sh) {
+    void add_part(Shape & sh, int size) {
         for (int i = 0; i < size; i++) {
             collection.push_back(new Atom( gen_rand(sh) ));
         }
@@ -57,10 +57,9 @@ public:
         
         return *re;
     }
-public:
-    static Network& create_solid_random_network(NCreator& creator, Shape& sh, int size) {
-        creator.add_part(size, sh);
-        return creator.finish();
+    Network& create_solid_random_network(Shape& sh, int size) {
+        this->add_part(sh, size);
+        return this->finish();
     }
 };
 
