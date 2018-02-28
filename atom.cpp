@@ -33,6 +33,12 @@ class Atom {
         sum += Atom::get_d_value(me, min); // origin atom also counts
         return sum;
     }
+    static inline void move_electron_s(Atom& sender, Atom& reciever) {
+        sender.electrons--;
+        reciever.electrons++; // so the actual movement looks like this... 
+        reciever.free_space--;
+        if (sender.free_space < sender.max_free_space) { sender.free_space++; }
+    }
     void move_electron(int d_rand, int min) {
         int sum = 0;
         for (int i = 0; i < n_count; i++) {
@@ -42,8 +48,7 @@ class Atom {
             sum += Atom::get_d_value(a, min);
             if (sum >= d_rand) 
             {
-                this->electrons--;
-                a.electrons++; // so the actual movement looks like this... 
+                move_electron_s(*this, a);
                 return;
             }
         }
@@ -62,7 +67,8 @@ public:
 
     // float acceptance = 1.0f; // represents 'will' to accept new electrons. the lower this value is, the less probable it is for atom to accept new electrons
     int free_space; // primitive alternative to 'acceptance'. probability of acceptance here is 0% if free_space == 0, or 100% if free_space > 0
-    
+    const int max_free_space;
+
     const int protons;
     int electrons;
     inline int charge() const { return +protons -electrons; }
@@ -76,7 +82,7 @@ public:
     }
 
 public:
-    Atom(AtomIParams p) : protons(p.protons), electrons(p.electrons), free_space(p.free_space), x(p.x), y(p.y) {}
+    Atom(AtomIParams p) : protons(p.protons), electrons(p.electrons), max_free_space(p.free_space), free_space(p.free_space), x(p.x), y(p.y) {}
     ~Atom();
 };
 
