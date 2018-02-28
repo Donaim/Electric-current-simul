@@ -3,6 +3,8 @@
 struct Shape { 
     virtual float area() const = 0;
 };
+
+
 struct RectangleF : public Shape {
     float x; float y;
     float Width; float Height;
