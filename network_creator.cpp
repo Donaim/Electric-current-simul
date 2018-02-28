@@ -47,7 +47,7 @@ public:
             collection.push_back(new Atom( gen_rand(sh) ));
         }
     }
-    Network finish() {
+    Network& finish() {
         Network * re = new Network{};
         re->atoms = &collection[0];
         re->a_count = collection.size();
@@ -58,7 +58,7 @@ public:
         return *re;
     }
 public:
-    static Network create_solid_random_network(NCreator& creator, Shape& sh, int size) {
+    static Network& create_solid_random_network(NCreator& creator, Shape& sh, int size) {
         Network * re = new Network{};
         re->atoms = new Atom*[size];
 

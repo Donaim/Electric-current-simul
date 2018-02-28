@@ -94,6 +94,11 @@ class Network {
 public:
     Atom ** atoms = nullptr;
     int a_count = 0;
+    void lap() {
+        for (int i = 0; i < a_count; i++ ) {
+            atoms[i]->turn();
+        }
+    }
 
     static inline float dist2(Atom * a, Atom * b) { return pow2(a->x - b->x) + pow2(a->y - b->y); } // distance squared
     ~Network();
