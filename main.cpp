@@ -10,7 +10,10 @@ int main() {
 
     Shape& sh = *new RectangleF{0, 0, 100, 100};
     Network nt = SimpleCreator{}.create_solid_random_network(sh, 10);
+
+    cout << nt << endl;
     nt.lap();
+    cout << nt << endl;
 
     cout << "end" << endl;
     return 0;

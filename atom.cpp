@@ -4,6 +4,9 @@
 #include "helpers.cpp"
 #include <stdint.h>
 #include <cmath>
+#include <iostream>
+
+using std::ostream;
 
 struct AtomIParams {
     int protons;
@@ -86,6 +89,7 @@ public:
 public:
     Atom(AtomIParams p) : protons(p.protons), electrons(p.electrons), max_free_space(p.free_space), free_space(p.free_space), x(p.x), y(p.y) {}
     ~Atom();
+    friend ostream& operator << (ostream& os, const Atom& o);
 };
 
 
@@ -102,9 +106,21 @@ public:
 
     static inline float dist2(Atom * a, Atom * b) { return pow2(a->x - b->x) + pow2(a->y - b->y); } // distance squared
     ~Network();
+    friend ostream& operator << (ostream& os, const Network& o);
 };
 
-#include <iostream>
+
+ostream& operator << (ostream& os, const Atom& o){
+    os << "O" ;
+    return os;
+}
+
+ostream& operator << (ostream& os, const Network& o){
+    for (int i = 0; i < o.a_count; i++) {
+        os << *o.atoms[i] << ' ';
+    }
+    return os;
+}
 
 Atom::~Atom() {
     // std::cout << "DS ATOM!" << std::endl;
