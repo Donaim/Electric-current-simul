@@ -10,7 +10,7 @@ public:
     static inline float dist2(Atom * a, Atom * b) { return pow2(a->x - b->x) + pow2(a->y - b->y); } // distance squared
 };
 
-#define MAX_CONNECTION_DIST 10
+#define MAX_CONNECTION_DIST 1.0f
 
 class ConnectedNetwork : protected Network {
 protected:
