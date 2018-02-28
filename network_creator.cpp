@@ -14,7 +14,11 @@ class NCreator {
 public:
     const RectangleF working_rec;
     virtual AtomIParams gen_rand() = 0;
-    virtual void add_part(int size) = 0;
+    virtual void add_part(int size) {
+        for (int i = 0; i < size; i++) {
+            collection.push_back(new Atom( gen_rand() ));
+        }
+    }
     virtual Network finish() {
         Network * re = new Network{};
         re->atoms = &collection[0];
