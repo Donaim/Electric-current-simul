@@ -29,10 +29,10 @@ int main() {
     ConnectedNetwork nt = SimpleCreator{}.create_solid_random_network(sh, 0.1);
     cout << "network connected!" << endl;
 
-    // cout << nt << endl;
+    cout << nt << endl;
     nt.lap();
     cout << "lap finished" << endl;
-    // cout << nt << endl;
+    cout << nt << endl;
 
     cout << "end" << endl;
     return 0;

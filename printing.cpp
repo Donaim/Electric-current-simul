@@ -12,8 +12,7 @@ ostream& operator << (ostream& os, const Atom& o){
     else 
     { os << '+';}
 
-    os << absi(o.charge());
-    os << ')';
+    os << '(' << absi(o.charge()) << ')';
 
     return os;
 }
