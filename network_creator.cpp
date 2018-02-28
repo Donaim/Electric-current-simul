@@ -4,6 +4,8 @@
 #include "rng.cpp"
 #include <vector>
 #include <stdexcept>
+#include <stdlib.h>
+#include <iostream> 
 
 struct Shape { 
     virtual float area() const = 0;
@@ -16,6 +18,8 @@ struct RectangleF : public Shape {
     virtual float area() const override { return Width * Height; }
 };
 
+
+
 class NCreator {
     std::vector<Atom*> collection;
 protected:
@@ -24,19 +28,26 @@ protected:
         Atom ** arr = net->atoms;
         float dist = pow2(max_connection_dist);
 
+        float avg_neighbors = 10; // helps with allocation
+        SList<Atom*> list(avg_neighbors);
+
         for (int x = 0; x < n; x++ ) {
             Atom * tmp = arr[x];
-            tmp->neighbors = new Atom*[n];
-            int n_count = 0;
+            list.forget_and_alloc_new((int)avg_neighbors + 17);
    
-            for (int y = x; y < n; y++) {
+            for (int y = 0; y < n; y++) {
                 if (Network::dist2(tmp, arr[y]) < dist) {
-                    tmp->neighbors[n_count++] = arr[y];
+                    list.push_back(arr[y]);
                 }
             }
    
-            tmp->n_count = n_count;
+            tmp->neighbors = list.source();
+            tmp->n_count = list.size();
+            avg_neighbors = (avg_neighbors * (x) + list.size()) / (float)(x + 1);
+            
         }
+        
+        std::cout << "avg network connections: " << avg_neighbors << std::endl;
     }
 public:
     float max_connection_dist = 10;
