@@ -5,12 +5,15 @@
 #include <vector>
 
 struct RectangleF {
-    float x, y;
-    float Width, Height;
+    float x; float y;
+    float Width; float Height;
 };
 
 class NCreator {
     std::vector<Atom*> collection;
+protected:
+    NCreator() : working_rec{0, 0, 100, 100} { }
+    NCreator(RectangleF wr) : working_rec{wr} {}
 public:
     const RectangleF working_rec;
     virtual AtomIParams gen_rand() = 0;
