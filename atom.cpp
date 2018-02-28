@@ -1,10 +1,11 @@
+#pragma once
 
 #include <stdint.h>
 #include "rng.cpp"
 
     // dont want to create Electron class, it would be too much.. 
 class Atom {
-    static inline int get_d_value(const Atom & a, int min) { return a.charge() + min; } 
+    static inline int get_d_value(const Atom & a, int min) { return a.charge() - min; } // this scales charges between 0 and max 
     static inline int get_min_d_value(Atom ** const atoms, int n, const Atom & me) {
         int m = INT32_MAX;
         for (int i = 0; i < n; i++) {
@@ -39,7 +40,7 @@ class Atom {
                 return;
             }
         }
-        // there is probability, that electron will stay home. that is because we have added home's d_value to the sum, and it is greather than the sum of only neighboring atoms
+        // there is a probability, that electron will stay home. that is because we have added home's d_value to the sum, and therefore it is greather than the sum of only neighboring atoms
     }
     void share_electron() {
         int min = Atom::get_min_d_value(neighbors, n_count, *this);
@@ -49,14 +50,14 @@ class Atom {
         move_electron(r, min); // direction is chosen based on random waged distribution
     }
 public:
-    Atom ** neighbors = nullptr; // adresses of neighbor atoms. its with them electrons exchange is happening
+    Atom ** neighbors = nullptr; // adresses of neighbor atoms. it's with them electron exchange is happening
     int n_count = 0;
 
     // float acceptance = 1.0f; // represents 'will' to accept new electrons. the lower this value is, the less probable it is for atom to accept new electrons
-    int free_space = 0; // primitive alternative to 'acceptance'. probability of acceptance here is 0% if free_space == 0, or 100% if free_space > 0
+    int free_space; // primitive alternative to 'acceptance'. probability of acceptance here is 0% if free_space == 0, or 100% if free_space > 0
     
-    int protons = 0;
-    int electrons = 0;
+    const int protons;
+    int electrons;
     inline int charge() const { return +protons -electrons; }
 
     const float x, y; // physical position of atom in 2d space
@@ -67,13 +68,15 @@ public:
         }
     }
 
+public:
+    Atom(int protons_, int electrons_, int free_space_, float x_, float y_) : protons(protons_), electrons(electrons_), free_space(free_space_), x(x_), y(y_) {}
     ~Atom();
 };
 
 
 class Network {
 public:
-    Atom * atoms = nullptr;
+    Atom ** atoms = nullptr;
     int a_count = 0;
 
     ~Network();
@@ -84,5 +87,8 @@ Atom::~Atom() {
     delete[] neighbors;
 }
 Network::~Network() {
+    for (int i = 0; i < a_count; i++ ){
+        delete atoms[i];
+    }
     delete[] atoms;
 }
