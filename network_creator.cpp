@@ -53,14 +53,14 @@ public:
         re->a_count = collection.size();
         connect_network(re);
 
-        collection = std::vector<Atom*>{}; // dont care about memory
+        // collection = std::vector<Atom*>{};
         
         return *re;
     }
 public:
     static Network& create_solid_random_network(NCreator& creator, Shape& sh, int size) {
         creator.add_part(size, sh);
-        return Network{};
+        return creator.finish();
     }
 };
 
