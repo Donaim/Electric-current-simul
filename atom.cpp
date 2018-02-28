@@ -18,24 +18,40 @@ class Atom {
         int sum = 0;
         for (int i = 0; i < n; i++) {
             Atom &a = (*atoms[i]);
-            if (a.free_space < 1) {continue; }
+            if (a.free_space < 1) { continue; }
             sum += Atom::get_d_value(a, min);
         }
         return sum;
     }
-    
+    void move_electron(int d_rand, int min) {
+        int sum = 0;
+        for (int i = 0; i < n_count; i++) {
+            Atom &a = (*neighbors[i]);
+            if (a.free_space < 1) { continue; }
+
+            sum += Atom::get_d_value(a, min);
+            if (sum >= d_rand) 
+            {
+                this->electrons--; 
+                a.electrons++; // so the actual movement looks like this... 
+                return;
+            }
+        }
+    }
     void share_electron() {
         int min = Atom::get_min_d_value(neighbors, n_count);
         int sum = Atom::get_d_value_sum(neighbors, n_count, min);
-        // float r = rand_0_max()
+        sum += Atom::get_d_value(*this, min); // there is probability that electron will stay home.
 
+        int r = rand_0_max(sum); 
+        move_electron(r, min); // direction is chosen based on random waged distribution
     }
 public:
     Atom ** neighbors = nullptr; // adresses of neighbor atoms. its with them electrons exchange is happening
     int n_count = 0;
 
     // float acceptance = 1.0f; // represents 'will' to accept new electrons. the lower this value is, the less probable it is for atom to accept new electrons
-    int free_space = 0; // primitive alternative to 'acceptance'. probability of acceptance is here is 0% if free_space == 0, or 100% if free_space > 0
+    int free_space = 0; // primitive alternative to 'acceptance'. probability of acceptance here is 0% if free_space == 0, or 100% if free_space > 0
     
     int protons = 0;
     int electrons = 0;
