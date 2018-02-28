@@ -3,6 +3,7 @@
 #include <stdlib.h>
 
 inline float pow2(float x) { return x * x; }
+inline int absi(int x) { return x < 0 ? -x : x; }
 
 template <typename T>
 T * create_arr(T * source, int size) {

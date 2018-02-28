@@ -26,7 +26,7 @@ int main() {
     // srand(time(0));
 
     Shape& sh = *new RectangleF{0, 0, 10, 10};
-    ConnectedNetwork nt = SimpleCreator{}.create_solid_random_network(sh, 10);
+    ConnectedNetwork nt = SimpleCreator{}.create_solid_random_network(sh, 0.1);
     cout << "network connected!" << endl;
 
     // cout << nt << endl;

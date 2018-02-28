@@ -2,11 +2,19 @@
 
 #include "atom.cpp"
 #include "network.cpp"
+#include "helpers.cpp"
 
 using std::ostream;
 
 ostream& operator << (ostream& os, const Atom& o){
-    os << "O" ;
+    if (o.charge() < 0) 
+    { os << '-'; }
+    else 
+    { os << '+';}
+
+    os << absi(o.charge());
+    os << ')';
+
     return os;
 }
 

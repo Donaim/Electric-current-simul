@@ -8,7 +8,6 @@ public:
     Atom ** atoms = nullptr;
     int a_count = 0;
     static inline float dist2(Atom * a, Atom * b) { return pow2(a->x - b->x) + pow2(a->y - b->y); } // distance squared
-    ~Network();
 };
 
 #define MAX_CONNECTION_DIST 10
@@ -52,10 +51,11 @@ public:
     }
 
     friend std::ostream& operator << (std::ostream& os, const ConnectedNetwork& o);
+    ~ConnectedNetwork();
 };
 
 
-Network::~Network() {
+ConnectedNetwork::~ConnectedNetwork() {
     // std::cout << "destructed " << a_count << " atoms" << std::endl;
     for (int i = 0; i < a_count; i++ ){
         delete atoms[i];
