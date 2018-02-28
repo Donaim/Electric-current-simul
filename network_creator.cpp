@@ -49,11 +49,11 @@ public:
     }
     Network& finish() {
         Network * re = new Network{};
-        re->atoms = &collection[0];
+        re->atoms = create_arr(&collection[0], collection.size());
         re->a_count = collection.size();
         connect_network(re);
 
-        // collection = std::vector<Atom*>{};
+        collection.clear();
         
         return *re;
     }

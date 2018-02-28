@@ -107,11 +107,13 @@ public:
 #include <iostream>
 
 Atom::~Atom() {
-    std::cout << "DS ATOM!" << std::endl;
-    // delete[] neighbors;
+    // std::cout << "DS ATOM!" << std::endl;
+    delete[] neighbors;
 }
 Network::~Network() {
-    std::cout << "destructingd " << a_count << " atoms" << std::endl;
+    // std::cout << "destructed " << a_count << " atoms" << std::endl;
+    for (int i = 0; i < a_count; i++ ){
+        delete atoms[i];
+    }
     delete[] atoms;
-    std::cout << "destructed! " << a_count << " atoms" << std::endl;
 }
