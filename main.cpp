@@ -10,7 +10,7 @@ int main() {
 
     SimpleCreator sc{};
     Shape& sh = *new RectangleF{0, 0, 100, 100};
-    SimpleCreator::create_solid_random_network(sc, sh, 200);
+    SimpleCreator::create_solid_random_network(sc, sh, 10);
 
     cout << "end" << endl;
     return 0;
