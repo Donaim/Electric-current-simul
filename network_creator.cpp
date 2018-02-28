@@ -59,15 +59,8 @@ public:
     }
 public:
     static Network& create_solid_random_network(NCreator& creator, Shape& sh, int size) {
-        Network * re = new Network{};
-        re->atoms = new Atom*[size];
-
-        for (int i = 0; i < size; i++) {
-            re->atoms[i] = new Atom( creator.gen_rand(sh)  );
-        }
-        creator.connect_network(re);
-        
-        return *re;
+        creator.add_part(size, sh);
+        return Network{};
     }
 };
 
