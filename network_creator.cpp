@@ -5,10 +5,8 @@
 #include "rng.cpp"
 #include "network_creator_params.cpp"
 #include <stdexcept>
-#include <type_traits>
 
 class NCreator {
-    // static_assert(std::is_base_of<NCreatorParams<SH_T>, T>::value, "T must inherit from NCreatorParams!");
 protected:
     SList<Atom*> collection;
     NCreator() : collection{1000} {}
