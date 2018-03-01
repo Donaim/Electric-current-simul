@@ -4,22 +4,26 @@
 #include <iostream>
 #include <functional>
 
-struct Network;
-typedef std::function<void(Network*)> nconnector_t;
-
-struct Network {
-    Atom ** atoms = nullptr;
-    int a_count = 0;
-};
-
 #define MAX_CONNECTION_DIST 1.0f
 
-class ConnectedNetwork : protected Network {
+struct Network {
+    AtomBase ** atoms;
+    int a_count;
+};
+
+class Connector {
 public:
-    ConnectedNetwork(Network& init, nconnector_t connector_method) : Network(init) {
-        connector_method(this);
-    }
-    void lap() {
+    virtual Atom ** connect (const Network& net) const = 0;
+};
+
+
+class ConnectedNetwork {
+    Atom ** const atoms;
+    const int a_count;
+public:
+    ConnectedNetwork(const Network& net, const Connector& conn) :  atoms(conn.connect(net)), a_count(net.a_count) 
+    { }
+    void lap() const {
         for (int i = 0; i < a_count; i++ ) {
             atoms[i]->turn();
         }

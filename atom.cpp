@@ -19,28 +19,28 @@ struct AtomBase {
 
     // dont want to create Electron class, it would be too much.. 
 class Atom : public AtomBase {
-    static inline int get_d_value(const Atom & a, int min) { return a.charge() - min; } // this scales charges between 0 and max 
-    static inline int get_min_d_value(Atom ** const atoms, int n, const Atom & me) {
+    static inline int get_d_value(const AtomBase & a, int min) { return a.charge() - min; } // this scales charges between 0 and max 
+    static inline int get_min_d_value(AtomBase ** const atoms, int n, const Atom & me) {
         int m = INT32_MAX;
         for (int i = 0; i < n; i++) {
-            Atom &a = (*atoms[i]);
+            const AtomBase &a = (*atoms[i]);
             if (a.free_space < 1) { continue; }
             if (a.charge() < m) { m = a.charge(); }
         }
         if (me.charge() < m) { m = me.charge(); } // origin atom also counts
         return m;
     }
-    static inline int get_d_value_sum(Atom ** const atoms, int n, int min, const Atom & me) {
+    static inline int get_d_value_sum(AtomBase ** const atoms, int n, int min, const AtomBase & me) {
         int sum = 0;
         for (int i = 0; i < n; i++) {
-            Atom &a = (*atoms[i]);
+            const AtomBase &a = (*atoms[i]);
             if (a.free_space < 1) { continue; }
             sum += Atom::get_d_value(a, min);
         }
         sum += Atom::get_d_value(me, min); // origin atom also counts
         return sum;
     }
-    static inline void move_electron_s(Atom& sender, Atom& reciever) {
+    static inline void exchange_e(AtomBase& sender, AtomBase& reciever) {
         sender.electrons--;
         reciever.electrons++; // so the actual movement looks like this... 
         reciever.free_space--;
@@ -49,13 +49,13 @@ class Atom : public AtomBase {
     void move_electron(int d_rand, int min) {
         int sum = 0;
         for (int i = 0; i < n_count; i++) {
-            Atom &a = (*neighbors[i]);
+            AtomBase &a = (*neighbors[i]);
             if (a.free_space < 1) { continue; }
 
             sum += Atom::get_d_value(a, min);
             if (sum >= d_rand) 
             {
-                move_electron_s(*this, a);
+                exchange_e(*this, a);
                 return;
             }
         }
@@ -69,8 +69,8 @@ class Atom : public AtomBase {
         move_electron(r, min); // direction is chosen based on random waged distribution
     }
 public:
-    Atom ** neighbors = nullptr; // adresses of neighbor atoms. it's with them electron exchange is happening
-    int n_count = 0;
+    AtomBase ** const neighbors = nullptr; // adresses of neighbor atoms. it's with them electron exchange is happening
+    const int n_count = 0;
     void turn() { // make a turn, or pass
         for (int c = charge(); c < 0; c++) { // if there is excess of electrons, they move to atom which has less of them
             share_electron();
@@ -78,8 +78,8 @@ public:
     }
 
 public:
-    static inline float dist2(Atom * a, Atom * b) { return pow2(a->x - b->x) + pow2(a->y - b->y); } // distance squared
-    Atom(AtomBase b) : AtomBase(b) {}
+    static inline float dist2(AtomBase * a, AtomBase * b) { return pow2(a->x - b->x) + pow2(a->y - b->y); } // distance squared
+    Atom(AtomBase b, AtomBase ** _nb, int _n_count) : AtomBase(b), neighbors(_nb), n_count(_n_count)  {}
     ~Atom();
     friend std::ostream& operator << (std::ostream& os, const Atom& o);
 };
