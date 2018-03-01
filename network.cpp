@@ -2,6 +2,10 @@
 
 #include "atom.cpp"
 #include <iostream>
+#include <functional>
+
+class Network;
+typedef std::function<void(Network*)> nconnector_t;
 
 class Network {
 public:
@@ -13,10 +17,10 @@ public:
 #define MAX_CONNECTION_DIST 1.0f
 
 class ConnectedNetwork : protected Network {
-protected:
-    virtual void connect_me() {
-        int n = this->a_count;
-        Atom ** arr = this->atoms;
+public:
+    static void connect_me(Network * net) {
+        int n = net->a_count;
+        Atom ** arr = net->atoms;
         float dist = pow2(MAX_CONNECTION_DIST);
 
         float avg_neighbors = 10; // helps with allocation
@@ -41,8 +45,8 @@ protected:
         std::cout << "avg network connections: " << avg_neighbors << std::endl;
     }
 public:
-    ConnectedNetwork(Network& init) : Network(init) {
-        connect_me();
+    ConnectedNetwork(Network& init, nconnector_t connector_method) : Network(init) {
+        connector_method(this);
     }
     void lap() {
         for (int i = 0; i < a_count; i++ ) {

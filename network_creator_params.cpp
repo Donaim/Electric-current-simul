@@ -1,4 +1,5 @@
 #pragma once
+#include "network.cpp"
 
 struct Shape { 
     virtual float area() const = 0;
@@ -16,12 +17,13 @@ struct RectangleF : public Shape {
 
 struct NCreatorParams {
     const Shape& sh;
-    NCreatorParams(Shape& _sh) : sh(_sh) {}
+    const nconnector_t connector;
+    NCreatorParams(Shape& _sh, nconnector_t c) : sh(_sh), connector(c) {}
 
     virtual ~NCreatorParams() {}
 };
 
 struct DensityParams : NCreatorParams {
-    DensityParams(Shape& sh) : NCreatorParams(sh) {}
+    DensityParams(Shape& sh, nconnector_t c) : NCreatorParams(sh, c) {}
     float density;
 };

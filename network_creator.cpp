@@ -13,11 +13,11 @@ protected:
 public:
     virtual AtomBase gen_rand(NCreatorParams& p) = 0;
     virtual void add_part(NCreatorParams& p) = 0;
-    ConnectedNetwork& finish() {
+    ConnectedNetwork& finish(NCreatorParams& p) {
         Network init{};
         init.atoms = collection.source();
         init.a_count = collection.size();
-        ConnectedNetwork * re = new ConnectedNetwork{init};
+        ConnectedNetwork * re = new ConnectedNetwork{init, p.connector};
 
         collection.forget_and_alloc_new(10);
         
@@ -26,7 +26,7 @@ public:
 
     ConnectedNetwork& create_solid_random_network(NCreatorParams& p) {
         this->add_part(p);
-        return this->finish();
+        return this->finish(p);
     }
 };
 
