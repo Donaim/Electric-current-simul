@@ -40,8 +40,8 @@ public:
     int free_space_max = 10;
     
     virtual void add_part(NCreatorParams& p) {
-        DensityParams<RectangleF> * pt = dynamic_cast<DensityParams<RectangleF> * >(&p);
-        if (!pt) { throw std::runtime_error("Simple creator accepts only DensityParams<RectangleF>"); }
+        DensityParams * pt = dynamic_cast<DensityParams * >(&p);
+        if (!pt) { throw std::runtime_error("Simple creator accepts only DensityParams"); }
 
         int size = p.sh.area() * pt->density;
         for (int i = 0; i < size; i++) {
@@ -49,10 +49,10 @@ public:
         }
     }
     virtual AtomBase gen_rand(NCreatorParams& p) override {
-        DensityParams<RectangleF> * pt = dynamic_cast<DensityParams<RectangleF> * >(&p);
-        if (!pt) { throw std::runtime_error("Simple creator accepts only DensityParams<RectangleF>"); }
+        const RectangleF * sh = dynamic_cast<const RectangleF * >(&(p.sh));
+        if (!sh) { throw std::runtime_error("Simple creator accepts only RectangleF"); }
         
-        auto working_rec = pt->sh_t;
+        auto working_rec = *sh;
         AtomBase re{};
 
         re.x = rand_min_max(working_rec.x, working_rec.x + working_rec.Width);

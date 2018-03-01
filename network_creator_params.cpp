@@ -21,9 +21,7 @@ struct NCreatorParams {
     virtual ~NCreatorParams() {}
 };
 
-template< typename SH_T >
 struct DensityParams : NCreatorParams {
-    const SH_T sh_t;
-    DensityParams(SH_T& sh) : NCreatorParams(sh), sh_t(sh) {}
+    DensityParams(Shape& sh) : NCreatorParams(sh) {}
     float density;
 };
