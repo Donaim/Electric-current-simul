@@ -3,7 +3,7 @@
 #include "atom.cpp"
 #include "network.cpp"
 #include "rng.cpp"
-#include "network_creator_shapes.cpp"
+#include "network_creator_params.cpp"
 #include <stdexcept>
 
 class NCreator {

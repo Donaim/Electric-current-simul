@@ -12,3 +12,10 @@ struct RectangleF : public Shape {
 
     virtual float area() const override { return Width * Height; }
 };
+
+
+struct NCreatorParams {
+    Shape& sh;
+
+    virtual ~NCreatorParams() {}
+};
