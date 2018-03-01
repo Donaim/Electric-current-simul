@@ -4,7 +4,7 @@
 
 namespace connectors {
     struct Intuitive : Connector {
-        virtual Atom ** connect(const Network& net) const override {
+        virtual Atom ** connect(const Network& net) const override { // complexity ~ n^2
             AtomBase ** arr = net.atoms;
             int n = net.a_count;
             float dist = pow2(MAX_CONNECTION_DIST);
@@ -33,27 +33,84 @@ namespace connectors {
         }
     };
     struct TreeLike : Connector {
+        int avg_neighbors = 10;
+        int neighbors_dev = 3;
 
-        virtual Atom ** connect(const Network& net) const override {
+        virtual Atom ** connect(const Network& net) const override { // complexity ~ n or (2n + ~n)
             AtomBase ** arr = net.atoms;
             int n = net.a_count;
-
-            for (int x = 0; x < n; x++ ) {
-                
+            
+            AtomIndexed ** indexed = new AtomIndexed*[n];
+            for (int i = 0; i < n; i++) {
+                int nbc = rand_i_min_max(avg_neighbors - neighbors_dev, avg_neighbors + neighbors_dev);
+                indexed[i] = new AtomIndexed(nbc, arr[i]);
             }
 
-            throw "not implemented";
-            return nullptr;
+            for (int i = 0, c = 0; i < n; i++ ) {
+                indexed[i]->find_neighbors(indexed, n, i, &c); // actual connecting
+            }
+
+            Atom ** re = new Atom*[n];
+            for (int i = 0; i < n; i++) {
+                re[i] = indexed[i]->to_atom();
+            }
+
+            return re;
         }
-        struct AtomIndexed {
-            AtomIndexed * prev;
+        class AtomIndexed {
+            AtomIndexed * parent;
+            AtomIndexed ** nb;
 
             AtomBase * me;
-            AtomBase ** nb;
-            int nb_count;
+            int target_count;
+            int curr_count;
+            
+            bool try_adopt(AtomIndexed * o) {
+                if (o->parent != nullptr) { return false; }
+                if (!try_connect(this, o)) { return false; }
+                
+                o->parent = this;
+                
+                return true;
+            }
 
-            AtomIndexed(int nb_count) : prev(nullptr), nb(new AtomBase*[nb_count]), nb_count(nb_count) {
+            static bool try_connect(AtomIndexed * a, AtomIndexed * b) {
+                if (a == b) { return false; } // adress the same : objects the same
+                if (a->curr_count >= a->target_count || b->curr_count >= b->target_count) { return false; }
 
+                a->nb[a->curr_count++] = b;
+                b->nb[b->curr_count++] = a;
+                return true;
+            }
+        public:
+                                                        // even though atom can have less than t_count neighbors, i allocate more, just to assure everyone fits
+            AtomIndexed(int t_count, AtomBase * m) : me(m), parent(nullptr), nb(new AtomIndexed*[t_count]), target_count(t_count), curr_count(0)
+            {
+
+            }
+            void find_neighbors(AtomIndexed ** indexed, int indexed_len, int my_index, int * c_ptr) {
+                if( parent != nullptr ) { // false only if root
+                    for (int i = 0; i < parent->curr_count; i++) {
+                        try_connect(this, parent->nb[i]);
+                        if (curr_count >= target_count) { break; }
+                    }
+                }
+                while (curr_count < target_count) {
+                    if ( (*c_ptr) >= indexed_len - 1 ) { break; }
+                    try_adopt(indexed[ ++(*c_ptr) ]);
+                }
+            }
+
+            Atom * to_atom() {
+                AtomBase ** a_nb = new AtomBase*[curr_count];
+                for (int i = 0; i < curr_count; i++ ) {
+                    a_nb[i] = nb[i]->me;
+                }
+
+                Atom * re = new Atom(*me, a_nb, curr_count);
+
+                delete[] a_nb;
+                return re;
             }
         };
     };
