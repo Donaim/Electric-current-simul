@@ -28,15 +28,15 @@ int main() {
     srand(time(0));
 
     auto sh = *new RectangleF{0, 0, 10, 10};
-    // auto p = *new DensityParams{sh, connectors::Intuitive{}, 0.1f};
-    auto p = *new DensityParams{sh, connectors::TreeLike{}, 0.1f};
+    // auto p = *new DensityParams{sh, connectors::Intuitive{}, 2.1f};
+    auto p = *new DensityParams{sh, connectors::TreeLike{}, 2.1f};
     ConnectedNetwork nt = SimpleCreator{}.create_solid_random_network(p);
     cout << "network connected!" << endl;
 
-    cout << nt << endl;
+    cout << nt << " : " << nt.total_charge() << endl;
     nt.lap();
     cout << "lap finished" << endl;
-    cout << nt << endl;
+    cout << nt << " : " << nt.total_charge() << endl;
 
     cout << "end" << endl;
     return 0;

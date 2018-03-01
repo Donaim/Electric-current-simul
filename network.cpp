@@ -40,6 +40,13 @@ public:
             atoms[i]->turn();
         }
     }
+    int total_charge() const {
+        int re = 0;
+        for (int i = 0; i < a_count; i++ ) {
+            re += atoms[i]->charge();
+        }
+        return re;
+    }
 
     friend std::ostream& operator << (std::ostream& os, const ConnectedNetwork& o);
     ~ConnectedNetwork();
