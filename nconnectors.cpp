@@ -53,7 +53,11 @@ namespace connectors {
             Atom ** re = new Atom*[n];
             for (int i = 0; i < n; i++) {
                 re[i] = indexed[i]->to_atom();
-                // delete indexed[i]; // bad
+            }
+
+            // destruct
+            for (int i = 0; i < n; i++ ) {
+                delete indexed[i];
             }
             delete[] indexed;
 
@@ -110,9 +114,13 @@ namespace connectors {
                 }
 
                 Atom * re = new Atom(*me, a_nb, curr_count);
-
                 // delete[] a_nb;
                 return re;
+            }
+
+            ~AtomIndexed() {
+                delete [] nb;
+                // delete me; // for some reason bad
             }
         };
     };
