@@ -28,7 +28,7 @@ int main() {
     // srand(time(0));
 
     auto sh = *new RectangleF{0, 0, 10, 10};
-    auto p = *new DensityParams{sh, connectors::Intuitive{}, 1.0f};
+    auto p = *new DensityParams{sh, connectors::TreeLike{}, 0.1f};
     ConnectedNetwork nt = SimpleCreator{}.create_solid_random_network(p);
     cout << "network connected!" << endl;
 

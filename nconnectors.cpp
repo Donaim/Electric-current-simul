@@ -15,7 +15,7 @@ namespace connectors {
 
             for (int x = 0; x < n; x++ ) {
                 AtomBase * tmp = arr[x];
-                list.forget_and_alloc_new((int)avg_neighbors + 17);
+                list.forget_and_alloc_new((int)avg_neighbors + 1);
     
                 for (int y = 0; y < n; y++) {
                     if (Atom::dist2(tmp, arr[y]) < dist) {
@@ -53,7 +53,9 @@ namespace connectors {
             Atom ** re = new Atom*[n];
             for (int i = 0; i < n; i++) {
                 re[i] = indexed[i]->to_atom();
+                // delete indexed[i]; // bad
             }
+            delete[] indexed;
 
             return re;
         }
@@ -109,7 +111,7 @@ namespace connectors {
 
                 Atom * re = new Atom(*me, a_nb, curr_count);
 
-                delete[] a_nb;
+                // delete[] a_nb;
                 return re;
             }
         };

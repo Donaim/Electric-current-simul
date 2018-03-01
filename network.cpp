@@ -9,6 +9,13 @@
 struct Network {
     AtomBase ** atoms;
     int a_count;
+    ~Network() {
+        // std::cout << "Network destructed" << std::endl;
+        for (int i = 0; i < a_count; i++) {
+            delete atoms[i];
+        }
+        delete[] atoms;
+    }
 };
 
 class Connector {
