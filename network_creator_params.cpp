@@ -24,6 +24,6 @@ struct NCreatorParams {
 };
 
 struct DensityParams : NCreatorParams {
-    DensityParams(const Shape& sh, const Connector& c) : NCreatorParams(sh, c) {}
+    DensityParams(const Shape& sh, const Connector& c, float density) : NCreatorParams(sh, c), density(density) {}
     float density;
 };
