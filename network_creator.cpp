@@ -7,17 +7,14 @@
 #include <stdexcept>
 #include <type_traits>
 
-#define __NCREATOR_INHERIT(x, y) public NCreator< x<y>, y >
-
-template <typename T, typename SH_T>
 class NCreator {
-    static_assert(std::is_base_of<NCreatorParams<SH_T>, T>::value, "T must inherit from NCreatorParams!");
+    // static_assert(std::is_base_of<NCreatorParams<SH_T>, T>::value, "T must inherit from NCreatorParams!");
 protected:
     SList<Atom*> collection;
     NCreator() : collection{1000} {}
 public:
-    virtual AtomBase gen_rand(T&) = 0;
-    virtual void add_part(T& p) = 0;
+    virtual AtomBase gen_rand(NCreatorParams& p) = 0;
+    virtual void add_part(NCreatorParams& p) = 0;
     ConnectedNetwork& finish() {
         Network init{};
         init.atoms = collection.source();
@@ -28,27 +25,34 @@ public:
         
         return *re;
     }
-    ConnectedNetwork& create_solid_random_network(T& p) {
+
+    ConnectedNetwork& create_solid_random_network(NCreatorParams& p) {
         this->add_part(p);
         return this->finish();
     }
 };
 
-class SimpleCreator : __NCREATOR_INHERIT(DensityParams, RectangleF) {
+class SimpleCreator : public NCreator {
 public:
     int protons_avg = 5;
     int protons_dev = 1;
     int electrons_dev = 3;
     int free_space_max = 10;
     
-    virtual void add_part(DensityParams<RectangleF>& p) {
-        int size = p.sh.area() * p.density;
+    virtual void add_part(NCreatorParams& p) {
+        DensityParams<RectangleF> * pt = dynamic_cast<DensityParams<RectangleF> * >(&p);
+        if (!pt) { throw std::runtime_error("Simple creator accepts only DensityParams<RectangleF>"); }
+
+        int size = p.sh.area() * pt->density;
         for (int i = 0; i < size; i++) {
             collection.push_back(new Atom( gen_rand(p) ));
         }
     }
-    virtual AtomBase gen_rand(DensityParams<RectangleF>& sh) override {
-        auto working_rec = sh.sh;
+    virtual AtomBase gen_rand(NCreatorParams& p) override {
+        DensityParams<RectangleF> * pt = dynamic_cast<DensityParams<RectangleF> * >(&p);
+        if (!pt) { throw std::runtime_error("Simple creator accepts only DensityParams<RectangleF>"); }
+        
+        auto working_rec = pt->sh_t;
         AtomBase re{};
 
         re.x = rand_min_max(working_rec.x, working_rec.x + working_rec.Width);
