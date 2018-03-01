@@ -1,3 +1,12 @@
+# Electric current simulator
+At this stage project is under development. Therefore there is not much things you can do with it.
+
+## What you can do:
+- See that charge redestribution really works.
+- Maybe even look at how it's happening.
+- Tweek NCreatorParams and (1).
+- Discover plenty of bugs.
+
 # Metric
 Distance:
 
