@@ -18,10 +18,7 @@ struct AtomBase {
 };
 
     // dont want to create Electron class, it would be too much.. 
-class Atom : protected AtomBase {
-    friend class Network;
-    friend class ConnectedNetwork;
-    
+class Atom : public AtomBase {
     static inline int get_d_value(const Atom & a, int min) { return a.charge() - min; } // this scales charges between 0 and max 
     static inline int get_min_d_value(Atom ** const atoms, int n, const Atom & me) {
         int m = INT32_MAX;
@@ -71,10 +68,9 @@ class Atom : protected AtomBase {
         int r = rand_0_max(sum); 
         move_electron(r, min); // direction is chosen based on random waged distribution
     }
-private:
+public:
     Atom ** neighbors = nullptr; // adresses of neighbor atoms. it's with them electron exchange is happening
     int n_count = 0;
-public:
     void turn() { // make a turn, or pass
         for (int c = charge(); c < 0; c++) { // if there is excess of electrons, they move to atom which has less of them
             share_electron();
@@ -82,6 +78,7 @@ public:
     }
 
 public:
+    static inline float dist2(Atom * a, Atom * b) { return pow2(a->x - b->x) + pow2(a->y - b->y); } // distance squared
     Atom(AtomBase b) : AtomBase(b) {}
     ~Atom();
     friend std::ostream& operator << (std::ostream& os, const Atom& o);
