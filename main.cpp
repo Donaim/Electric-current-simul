@@ -29,14 +29,22 @@ int main() {
 
     auto sh = *new RectangleF{0, 0, 1, 1};
     // auto p = *new DensityParams{sh, connectors::Intuitive{}, 100000.0};
-    auto p = *new DensityParams{sh, connectors::TreeLike{}, 10000000.0};
+    auto p = *new DensityParams{sh, connectors::TreeLike{}, 20.0};
     ConnectedNetwork nt = SimpleCreator{}.create_solid_random_network(p);
     cout << "network connected!" << endl;
 
-    // cout << nt << " : " << nt.total_charge() << endl;
-    // nt.lap();
+    cout << nt << " : " << nt.total_charge() << endl;
+    nt.lap();
+    nt.lap();
+    nt.lap();
+    nt.lap();
+    nt.lap();
+    nt.lap();
+    nt.lap();
+    nt.lap();
+    nt.lap();
     cout << "lap finished" << endl;
-    // cout << nt << " : " << nt.total_charge() << endl;
+    cout << nt << " : " << nt.total_charge() << endl;
 
     cout << "end" << endl;
     return 0;
