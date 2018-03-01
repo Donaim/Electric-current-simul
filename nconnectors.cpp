@@ -4,17 +4,16 @@
 
 namespace connectors {
     struct Intuitive : Connector {
-        virtual Atom ** connect(const Network& net) const override { // complexity ~ n^2
-            AtomBase ** arr = net.atoms;
+        virtual void connect(const Network& net) const override { // complexity ~ n^2
+            Atom ** arr = net.atoms;
             int n = net.a_count;
             float dist = pow2(MAX_CONNECTION_DIST);
-            Atom ** re = new Atom*[n];
 
             float avg_neighbors = 10; // helps with allocation
-            SList<AtomBase*> list(avg_neighbors);
+            SList<Atom*> list(avg_neighbors);
 
             for (int x = 0; x < n; x++ ) {
-                AtomBase * tmp = arr[x];
+                Atom * tmp = arr[x];
                 list.forget_and_alloc_new((int)avg_neighbors + 1);
     
                 for (int y = 0; y < n; y++) {
@@ -23,21 +22,21 @@ namespace connectors {
                     }
                 }
 
-                re[x] = new Atom(*tmp, list.source(), list.size());
+                tmp->neighbors = list.source();
+                tmp->n_count = list.size();
+
                 avg_neighbors = (avg_neighbors * (x) + list.size()) / (float)(x + 1);
             }
             
             std::cout << "avg network connections: " << avg_neighbors << std::endl;
-
-            return re;
         }
     };
     struct TreeLike : Connector {
         int avg_neighbors = 10;
         int neighbors_dev = 3;
 
-        virtual Atom ** connect(const Network& net) const override { // complexity ~ n or (2n + ~n)
-            AtomBase ** arr = net.atoms;
+        virtual void connect(const Network& net) const override { // complexity ~ n or (2n + ~n)
+            Atom ** arr = net.atoms;
             int n = net.a_count;
             
             AtomIndexed ** indexed = new AtomIndexed*[n];
@@ -50,9 +49,9 @@ namespace connectors {
                 indexed[i]->find_neighbors(indexed, n, i, &c); // actual connecting
             }
 
-            Atom ** re = new Atom*[n];
             for (int i = 0; i < n; i++) {
-                re[i] = indexed[i]->to_atom();
+                arr[i]->neighbors = indexed[i]->get_raw_nb();
+                arr[i]->n_count = indexed[i]->get_curr_count();
             }
 
             // destruct
@@ -60,14 +59,12 @@ namespace connectors {
                 delete indexed[i];
             }
             delete[] indexed;
-
-            return re;
         }
         class AtomIndexed {
             AtomIndexed * parent;
             AtomIndexed ** nb;
 
-            AtomBase * me;
+            Atom * me;
             int target_count;
             int curr_count;
             
@@ -90,7 +87,7 @@ namespace connectors {
             }
         public:
                                                         // even though atom can have less than t_count neighbors, i allocate more, just to assure everyone fits
-            AtomIndexed(int t_count, AtomBase * m) : me(m), parent(nullptr), nb(new AtomIndexed*[t_count]), target_count(t_count), curr_count(0)
+            AtomIndexed(int t_count, Atom * m) : me(m), parent(nullptr), nb(new AtomIndexed*[t_count]), target_count(t_count), curr_count(0)
             {
 
             }
@@ -107,16 +104,14 @@ namespace connectors {
                 }
             }
 
-            Atom * to_atom() {
-                AtomBase ** a_nb = new AtomBase*[curr_count];
+            Atom ** get_raw_nb() {
+                Atom ** re = new Atom*[curr_count];
                 for (int i = 0; i < curr_count; i++ ) {
-                    a_nb[i] = nb[i]->me;
+                    re[i] = nb[i]->me;
                 }
-
-                Atom * re = new Atom(*me, a_nb, curr_count);
-                // delete[] a_nb;
                 return re;
             }
+            int get_curr_count() { return curr_count; }
 
             ~AtomIndexed() {
                 delete [] nb;

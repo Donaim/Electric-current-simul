@@ -70,7 +70,7 @@ class Atom : public AtomBase {
     }
 public:
     Atom ** neighbors = nullptr; // adresses of neighbor atoms. it's with them electron exchange is happening
-    const int n_count = 0;
+    int n_count = 0;
     void turn() { // make a turn, or pass
         for (int c = charge(); c < 0; c++) { // if there is excess of electrons, they move to atom which has less of them
             share_electron();

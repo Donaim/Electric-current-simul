@@ -7,28 +7,33 @@
 #define MAX_CONNECTION_DIST 1.0f
 
 struct Network {
-    AtomBase ** atoms;
+    Atom ** atoms;
     int a_count;
     ~Network() {
         // std::cout << "Network destructed" << std::endl;
-        for (int i = 0; i < a_count; i++) {
-            delete atoms[i];
-        }
-        delete[] atoms;
+        // for (int i = 0; i < a_count; i++) {
+        //     delete atoms[i];
+        // }
+        // delete[] atoms;
     }
 };
 
 class Connector {
 public:
-    virtual Atom ** connect (const Network& net) const = 0;
+    virtual void connect (const Network& net) const = 0;
 };
 
 
 class ConnectedNetwork {
     Atom ** const atoms;
     const int a_count;
+
+    static Atom ** connect(Network& net, const Connector& conn) {
+        conn.connect(net);
+        return net.atoms;
+    }
 public:
-    ConnectedNetwork(const Network& net, const Connector& conn) :  atoms(conn.connect(net)), a_count(net.a_count) 
+    ConnectedNetwork(Network& net, const Connector& conn) :  atoms(connect(net, conn)), a_count(net.a_count) 
     { }
     void lap() const {
         for (int i = 0; i < a_count; i++ ) {
