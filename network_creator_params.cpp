@@ -14,8 +14,18 @@ struct RectangleF : public Shape {
 };
 
 
+template <typename SH_T>
 struct NCreatorParams {
-    Shape& sh;
+    static_assert(std::is_base_of<Shape, SH_T>::value, "SH_T must inherit from Shape!");
+    
+    const SH_T& sh;
+    NCreatorParams(SH_T& _sh) : sh(_sh) {}
 
     virtual ~NCreatorParams() {}
+};
+
+template <typename SH_T>
+struct DensityParams : NCreatorParams<SH_T> {
+    DensityParams(SH_T& sh) : NCreatorParams<SH_T>(sh) {}
+    float density;
 };

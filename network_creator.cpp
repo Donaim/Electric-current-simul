@@ -5,19 +5,19 @@
 #include "rng.cpp"
 #include "network_creator_params.cpp"
 #include <stdexcept>
+#include <type_traits>
 
+#define __NCREATOR_INHERIT(x, y) public NCreator< x<y>, y >
+
+template <typename T, typename SH_T>
 class NCreator {
-    SList<Atom*> collection;
+    static_assert(std::is_base_of<NCreatorParams<SH_T>, T>::value, "T must inherit from NCreatorParams!");
 protected:
+    SList<Atom*> collection;
     NCreator() : collection{1000} {}
 public:
-    virtual AtomBase gen_rand(Shape&) = 0;
-    void add_part(Shape & sh, float density) {
-        int size = sh.area() * density;
-        for (int i = 0; i < size; i++) {
-            collection.push_back(new Atom( gen_rand(sh) ));
-        }
-    }
+    virtual AtomBase gen_rand(T&) = 0;
+    virtual void add_part(T& p) = 0;
     ConnectedNetwork& finish() {
         Network init{};
         init.atoms = collection.source();
@@ -28,27 +28,31 @@ public:
         
         return *re;
     }
-    ConnectedNetwork& create_solid_random_network(Shape& sh, float density) {
-        this->add_part(sh, density);
+    ConnectedNetwork& create_solid_random_network(T& p) {
+        this->add_part(p);
         return this->finish();
     }
 };
 
-class SimpleCreator : public NCreator {
+class SimpleCreator : __NCREATOR_INHERIT(DensityParams, RectangleF) {
 public:
     int protons_avg = 5;
     int protons_dev = 1;
     int electrons_dev = 3;
     int free_space_max = 10;
-
-    virtual AtomBase gen_rand(Shape& sh) {
-        const RectangleF* working_rec = dynamic_cast<const RectangleF*>(&sh);
-        if(!working_rec) { throw std::runtime_error("Dont know how to handle this shape"); } 
-
+    
+    virtual void add_part(DensityParams<RectangleF>& p) {
+        int size = p.sh.area() * p.density;
+        for (int i = 0; i < size; i++) {
+            collection.push_back(new Atom( gen_rand(p) ));
+        }
+    }
+    virtual AtomBase gen_rand(DensityParams<RectangleF>& sh) override {
+        auto working_rec = sh.sh;
         AtomBase re{};
 
-        re.x = rand_min_max(working_rec->x, working_rec->x + working_rec->Width);
-        re.y = rand_min_max(working_rec->y, working_rec->y + working_rec->Height);
+        re.x = rand_min_max(working_rec.x, working_rec.x + working_rec.Width);
+        re.y = rand_min_max(working_rec.y, working_rec.y + working_rec.Height);
 
         re.protons      = rand_i_min_max(protons_avg - protons_dev  , protons_avg + protons_dev  );
         re.electrons    = rand_i_min_max(protons_avg - electrons_dev, protons_avg + electrons_dev);

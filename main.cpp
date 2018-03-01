@@ -1,6 +1,7 @@
 
 #include "atom.cpp"
 #include "network_creator.cpp"
+#include "network_creator_params.cpp"
 #include "helpers.cpp"
 #include <iostream>
 #include <stdlib.h>
@@ -25,8 +26,9 @@ void test_list() {
 int main() {
     // srand(time(0));
 
-    Shape& sh = *new RectangleF{0, 0, 10, 10};
-    ConnectedNetwork nt = SimpleCreator{}.create_solid_random_network(sh, 0.1);
+    auto sh = *new RectangleF{0, 0, 10, 10};
+    auto p = *new DensityParams<RectangleF>{sh};
+    ConnectedNetwork nt = SimpleCreator{}.create_solid_random_network(p);
     cout << "network connected!" << endl;
 
     cout << nt << endl;
