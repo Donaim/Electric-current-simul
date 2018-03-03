@@ -3,7 +3,7 @@
 #include "atom.cpp"
 #include "network_creator_params.cpp"
 #include "nconnectors.h"
-#include "network.h"
+#include "atom_collection.h"
 #include <iostream>
 #include <functional>
 
@@ -12,12 +12,12 @@ class ConnectedNetwork {
     Atom ** const atoms;
     const int a_count;
 
-    static Atom ** connect(const Network& net, const Connector& conn) {
+    static Atom ** connect(const AtomCollection& net, const Connector& conn) {
         conn.connect(net);
         return net.atoms;
     }
 public:
-    ConnectedNetwork(const Network& net, const NCreatorParams& p) :  atoms(connect(net, p.connector)), a_count(net.a_count) 
+    ConnectedNetwork(const AtomCollection& net, const NCreatorParams& p) :  atoms(connect(net, p.connector)), a_count(net.a_count) 
     { }
     void lap() const {
         for (int i = 0; i < a_count; i++ ) {
@@ -53,7 +53,7 @@ ostream& operator << (ostream& os, const ConnectedNetwork& o){
 
 
 struct SimpleConstructor : NetworkConstructor {
-    virtual ConnectedNetwork& construct(const Network& base, const NCreatorParams& p) const override {
+    virtual ConnectedNetwork& construct(const AtomCollection& base, const NCreatorParams& p) const override {
         return *new ConnectedNetwork(base, p);
     }
 };

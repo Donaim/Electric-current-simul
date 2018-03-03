@@ -16,10 +16,10 @@ struct RectangleF : public Shape {
 };
 
 class ConnectedNetwork;
-class Network;
+class AtomCollection;
 struct NCreatorParams;
 struct NetworkConstructor {
-    virtual ConnectedNetwork& construct(const Network& base, const NCreatorParams& p) const = 0;
+    virtual ConnectedNetwork& construct(const AtomCollection& base, const NCreatorParams& p) const = 0;
 };
 
 struct NCreatorParams {

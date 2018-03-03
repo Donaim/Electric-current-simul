@@ -15,7 +15,7 @@ public:
     virtual void add_part(NCreatorParams& p) = 0;
 
     ConnectedNetwork& finish(NCreatorParams& p) {
-        Network init{};
+        AtomCollection init{};
         init.atoms = collection.source();
         init.a_count = collection.size();
         ConnectedNetwork& re = p.nconstructor.construct(init, p);

@@ -2,12 +2,12 @@
 
 #include "atom.cpp"
 #include "rng.cpp"
-#include "network.h"
+#include "atom_collection.h"
 #include "nconnectors.h"
 
 namespace connectors {
     struct Intuitive : Connector {
-        virtual void connect(const Network& net) const override { // complexity ~ n^2
+        virtual void connect(const AtomCollection& net) const override { // complexity ~ n^2
             Atom ** arr = net.atoms;
             int n = net.a_count;
             float dist = pow2(MAX_CONNECTION_DIST);
@@ -38,7 +38,7 @@ namespace connectors {
         int avg_neighbors = 10;
         int neighbors_dev = 3;
 
-        virtual void connect(const Network& net) const override { // complexity ~ n or (2n + ~n)
+        virtual void connect(const AtomCollection& net) const override { // complexity ~ n or (2n + ~n)
             Atom ** arr = net.atoms;
             int n = net.a_count;
             
