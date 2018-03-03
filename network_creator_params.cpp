@@ -19,7 +19,7 @@ class ConnectedNetwork;
 class AtomCollection;
 struct NCreatorParams;
 struct NetworkConstructor {
-    virtual ConnectedNetwork& construct(const AtomCollection& base, const NCreatorParams& p) const = 0;
+    virtual ConnectedNetwork& construct(AtomCollection& base, const NCreatorParams& p) const = 0;
 };
 
 struct NCreatorParams {

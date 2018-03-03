@@ -12,12 +12,12 @@ class ConnectedNetwork {
     Atom ** const atoms;
     const int a_count;
 
-    static Atom ** connect(const AtomCollection& net, const Connector& conn) {
+    static Atom ** connect(AtomCollection& net, const Connector& conn) {
         conn.connect(net);
-        return net.atoms;
+        return net.atoms();
     }
 public:
-    ConnectedNetwork(const AtomCollection& net, const NCreatorParams& p) :  atoms(connect(net, p.connector)), a_count(net.a_count) 
+    ConnectedNetwork(AtomCollection& net, const NCreatorParams& p) :  atoms(connect(net, p.connector)), a_count(net.list.size()) 
     { }
     void lap() const {
         for (int i = 0; i < a_count; i++ ) {
@@ -53,7 +53,7 @@ ostream& operator << (ostream& os, const ConnectedNetwork& o){
 
 
 struct SimpleConstructor : NetworkConstructor {
-    virtual ConnectedNetwork& construct(const AtomCollection& base, const NCreatorParams& p) const override {
+    virtual ConnectedNetwork& construct(AtomCollection& base, const NCreatorParams& p) const override {
         return *new ConnectedNetwork(base, p);
     }
 };

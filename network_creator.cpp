@@ -1,5 +1,6 @@
 #pragma once
 
+#include "atom_collection.h"
 #include "atom.cpp"
 #include "network.cpp"
 #include "rng.cpp"
@@ -8,19 +9,16 @@
 
 class NCreator {
 protected:
-    SList<Atom*> collection;
+    AtomCollection collection;
     NCreator() : collection{1000} {}
 public:
     virtual AtomBase gen_rand(NCreatorParams& p) = 0;
     virtual void add_part(NCreatorParams& p) = 0;
 
     ConnectedNetwork& finish(NCreatorParams& p) {
-        AtomCollection init{};
-        init.atoms = collection.source();
-        init.a_count = collection.size();
-        ConnectedNetwork& re = p.nconstructor.construct(init, p);
+        ConnectedNetwork& re = p.nconstructor.construct(collection, p);
 
-        collection.forget_and_alloc_new(10);
+        collection.list.forget_and_alloc_new(10);
         
         return re;
     }
@@ -45,7 +43,7 @@ public:
 
         int size = p.sh.area() * pt->density;
         for (int i = 0; i < size; i++) {
-            collection.push_back(new Atom( gen_rand(p) ));
+            collection.list.push_back(new Atom( gen_rand(p) ));
         }
     }
     virtual AtomBase gen_rand(NCreatorParams& p) override {

@@ -7,9 +7,9 @@
 
 namespace connectors {
     struct Intuitive : Connector {
-        virtual void connect(const AtomCollection& net) const override { // complexity ~ n^2
-            Atom ** arr = net.atoms;
-            int n = net.a_count;
+        virtual void connect(AtomCollection& net) const override { // complexity ~ n^2
+            Atom ** arr = net.atoms();
+            int n = net.list.size();
             float dist = pow2(MAX_CONNECTION_DIST);
 
             float avg_neighbors = 10; // helps with allocation
@@ -38,9 +38,9 @@ namespace connectors {
         int avg_neighbors = 10;
         int neighbors_dev = 3;
 
-        virtual void connect(const AtomCollection& net) const override { // complexity ~ n or (2n + ~n)
-            Atom ** arr = net.atoms;
-            int n = net.a_count;
+        virtual void connect(AtomCollection& net) const override { // complexity ~ n or (2n + ~n)
+            Atom ** arr = net.atoms();
+            int n = net.list.size();
             
             AtomIndexed ** indexed = new AtomIndexed*[n];
             for (int i = 0; i < n; i++) {

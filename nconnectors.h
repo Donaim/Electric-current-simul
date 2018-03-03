@@ -6,5 +6,5 @@
 
 class Connector {
 public:
-    virtual void connect (const AtomCollection& net) const = 0;
+    virtual void connect (AtomCollection& net) const = 0;
 };
