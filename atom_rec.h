@@ -11,3 +11,7 @@ public:
     AtomRec(AtomBase b) : Atom(b) {}
     virtual void turn() override;
 };
+
+struct AtomRecConstructor : public AtomConstructor {
+    virtual Atom * construct(const AtomBase& base, const NCreatorParams& p) const override;
+};

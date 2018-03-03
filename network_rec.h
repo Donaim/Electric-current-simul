@@ -18,7 +18,7 @@ public:
 
 
 struct RecConstructor : NetworkConstructor {
-    virtual ConnectedNetwork& construct(AtomCollection& base, const NCreatorParams& p) const override {
-        return *new NetworkRec(base, p);
+    virtual ConnectedNetwork * construct(AtomCollection& base, const NCreatorParams& p) const override {
+        return new NetworkRec(base, p);
     }
 };

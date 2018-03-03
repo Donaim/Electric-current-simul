@@ -61,7 +61,7 @@ ostream& operator << (ostream& os, const ConnectedNetwork& o){
 
 
 struct SimpleConstructor : NetworkConstructor {
-    virtual ConnectedNetwork& construct(AtomCollection& base, const NCreatorParams& p) const override {
-        return *new ConnectedNetwork(base, p);
+    virtual ConnectedNetwork * construct(AtomCollection& base, const NCreatorParams& p) const override {
+        return new ConnectedNetwork(base, p);
     }
 };

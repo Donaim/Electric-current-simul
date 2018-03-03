@@ -10,3 +10,7 @@ void AtomRec::turn() {
         net->aquenue.push_back(partner);
     }
 }
+
+Atom * AtomRecConstructor::construct(const AtomBase& base, const NCreatorParams& p) const {
+    return new AtomRec(base);
+};

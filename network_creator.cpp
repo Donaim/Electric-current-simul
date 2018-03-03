@@ -1,7 +1,6 @@
 #pragma once
 
 #include "atom_collection.h"
-#include "atom.cpp"
 #include "network.cpp"
 #include "rng.cpp"
 #include "network_creator_params.cpp"
@@ -16,11 +15,11 @@ public:
     virtual void add_part(NCreatorParams& p) = 0;
 
     ConnectedNetwork& finish(NCreatorParams& p) {
-        ConnectedNetwork& re = p.nconstructor.construct(collection, p);
+        ConnectedNetwork * re = p.nconstructor.construct(collection, p);
 
         collection.list.forget_and_alloc_new(10);
         
-        return re;
+        return *re;
     }
 
     ConnectedNetwork& create_solid_random_network(NCreatorParams& p) {
@@ -43,7 +42,7 @@ public:
 
         int size = p.sh.area() * pt->density;
         for (int i = 0; i < size; i++) {
-            collection.list.push_back(new Atom( gen_rand(p) ));
+            collection.list.push_back(p.aconstructor.construct(gen_rand(p), p));
         }
     }
     virtual AtomBase gen_rand(NCreatorParams& p) override {

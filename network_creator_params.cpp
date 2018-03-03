@@ -19,21 +19,31 @@ class ConnectedNetwork;
 class AtomCollection;
 struct NCreatorParams;
 struct NetworkConstructor {
-    virtual ConnectedNetwork& construct(AtomCollection& base, const NCreatorParams& p) const = 0;
+    virtual ConnectedNetwork * construct(AtomCollection& base, const NCreatorParams& p) const = 0;
 };
+struct AtomConstructor {
+    virtual Atom * construct(const AtomBase& base, const NCreatorParams& p) const = 0;
+};
+struct SimpleAtomConstructor : AtomConstructor{
+    virtual Atom * construct(const AtomBase& base, const NCreatorParams& p) const override {
+        return new Atom(base);
+    }
+};
+
 
 struct NCreatorParams {
     const Shape& sh;
     const Connector& connector;
     const NetworkConstructor& nconstructor;
-    NCreatorParams(const Shape& _sh, const Connector& c, const NetworkConstructor& nc) 
-        : sh(_sh), connector(c), nconstructor(nc) {}
+    const AtomConstructor& aconstructor;
+    NCreatorParams(const Shape& _sh, const Connector& c, const NetworkConstructor& nc, const AtomConstructor& ac) 
+        : sh(_sh), connector(c), nconstructor(nc), aconstructor(ac) {}
 
     virtual ~NCreatorParams() {}
 };
 
 struct DensityParams : NCreatorParams {
-    DensityParams(const Shape& sh, const Connector& c, const NetworkConstructor& nc, float density) 
-        : NCreatorParams(sh, c, nc), density(density) {}
+    DensityParams(const Shape& sh, const Connector& c, const NetworkConstructor& nc, const AtomConstructor& ac, float density) 
+        : NCreatorParams(sh, c, nc, ac), density(density) {}
     float density;
 };
