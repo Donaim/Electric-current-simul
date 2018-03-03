@@ -4,10 +4,12 @@
 
 
 void AtomRec::turn() {
-    Atom * partner = select_partner();
-    if (partner != nullptr) {
-        exchange_e(*this, *partner);
-        net->aquenue.push_back(partner);
+    for (int c = charge(); c < 0; c++) { // if there is excess of electrons, they move to atom which has less of them
+        Atom * partner = select_partner();
+        if (partner != nullptr) {
+            exchange_e(*this, *partner);
+            net->aquenue.push_back(partner);
+        }
     }
 }
 

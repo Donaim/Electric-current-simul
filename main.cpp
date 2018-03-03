@@ -14,7 +14,7 @@ int main() {
 
     auto sh = *new RectangleF{0, 0, 1, 1};
     // auto p = *new DensityParams{sh, connectors::TreeLike{}, SimpleConstructor{}, 20.0};
-    auto p = *new DensityParams{sh, connectors::TreeLike{}, RecConstructor{}, AtomRecConstructor{}, 10.0};
+    auto p = *new DensityParams{sh, connectors::TreeLike{}, RecConstructor{}, AtomRecConstructor{}, 1000.0};
     NetworkRec& nt = (NetworkRec&) SimpleCreator{}.create_solid_random_network(p);
     cout << "network connected!" << endl;
 
