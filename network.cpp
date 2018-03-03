@@ -32,6 +32,13 @@ public:
         }
         return re;
     }
+    float avg_abscharge() const {
+        int sum = 0;
+        for (int i = 0; i < a_count; i++ ) {
+            sum += std::abs(atoms[i]->charge());
+        }
+        return sum / (float)a_count;
+    }
 
     friend std::ostream& operator << (std::ostream& os, const ConnectedNetwork& o);
     ~ConnectedNetwork();

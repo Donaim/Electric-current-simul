@@ -7,7 +7,9 @@ d = sys.argv[1]
 files = os.listdir(d)
 # print(files)
 
-with open(os.path.join(d, "sipipis.h"), "w+") as writer:
-    cpp = filter(lambda f: f.split('.')[-1] == "cpp", files)
+cppname = "sipipis.cpp"
+
+with open(os.path.join(d, cppname), "w+") as writer:
+    cpp = filter(lambda f: f.split('.')[-1] == "cpp" and f != cppname, files)
     cpp = list(map(lambda f: "#include \"" + f + "\"" + '\n', cpp))
     writer.writelines(cpp)

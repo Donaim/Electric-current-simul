@@ -21,7 +21,7 @@
             "type": "shell",
             "dependsOn": "getcpps",
             "command": "g++", 
-            "args": [ "sipipis.h" ],
+            "args": [ "sipipis.cpp" ],
             "group": "test",
             "presentation": {
                 "echo": true,

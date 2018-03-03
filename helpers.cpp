@@ -42,4 +42,8 @@ public:
     }
     inline T * source() { return buffer; }
     inline int size() { return _size; }
+
+    inline void clear_dont_free() { _size = 0; }
+
+    T operator [] (std::size_t i) { return buffer[i]; }
 };
