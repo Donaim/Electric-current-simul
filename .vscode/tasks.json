@@ -4,12 +4,24 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "getcpps",
+            "type": "shell",
+            "command": "scripts/sipipis.py", 
+            "args": [ "${workspaceFolder}" ],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "silent",
+                "focus": true,
+                "panel": "shared"
+            }
+        },
+        {
             "label": "build",
             "type": "shell",
+            "dependsOn": "getcpps",
             "command": "g++", 
-            "args": [
-                "main.cpp"
-            ],
+            "args": [ "sipipis.h" ],
             "group": "test",
             "presentation": {
                 "echo": true,
