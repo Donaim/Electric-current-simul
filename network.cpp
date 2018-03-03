@@ -9,6 +9,7 @@
 
 
 class ConnectedNetwork {
+protected:
     Atom ** const atoms;
     const int a_count;
 
@@ -19,7 +20,7 @@ class ConnectedNetwork {
 public:
     ConnectedNetwork(AtomCollection& net, const NCreatorParams& p) :  atoms(connect(net, p.connector)), a_count(net.list.size()) 
     { }
-    void lap() const {
+    virtual void lap() {
         for (int i = 0; i < a_count; i++ ) {
             atoms[i]->turn();
         }

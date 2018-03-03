@@ -46,19 +46,16 @@ class Atom : public AtomBase {
         reciever.free_space--;
         if (sender.free_space < sender.max_free_space) { sender.free_space++; }
     }
-    void move_electron(int d_rand, int min) {
+    Atom& choose_winner(int d_rand, int min) {
         int sum = 0;
         for (int i = 0; i < n_count; i++) {
-            AtomBase &a = (*neighbors[i]);
+            Atom &a = (*neighbors[i]);
             if (a.free_space < 1) { continue; }
 
             sum += Atom::get_d_value(a, min);
-            if (sum >= d_rand) 
-            {
-                exchange_e(*this, a);
-                return;
-            }
+            if (sum >= d_rand) { return a; }
         }
+        return *this;
         // there is a probability, that electron will stay home. that is because we have added home's d_value to the sum, and therefore it is greather than the sum of only neighboring atoms
     }
     void share_electron() {
@@ -66,12 +63,13 @@ class Atom : public AtomBase {
         int sum = Atom::get_d_value_sum(neighbors, n_count, min, *this);
 
         int r = rand_0_max(sum); 
-        move_electron(r, min); // direction is chosen based on random waged distribution
+        Atom& winner = choose_winner(r, min); // direction is chosen based on random waged distribution
+        exchange_e(*this, winner);
     }
 public:
     Atom ** neighbors = nullptr; // adresses of neighbor atoms. it's with them electron exchange is happening
     int n_count = 0;
-    void turn() { // make a turn, or pass
+    virtual void turn() { // make a turn, or pass
         for (int c = charge(); c < 0; c++) { // if there is excess of electrons, they move to atom which has less of them
             share_electron();
         }

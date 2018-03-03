@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "atom_rec.h"
+#include "network_rec.h"
+
 using namespace std;
 
 int main() {

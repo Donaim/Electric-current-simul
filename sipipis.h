@@ -1,5 +1,6 @@
 #include "nconnectors.cpp"
 #include "network_creator_params.cpp"
+#include "network_rec.cpp"
 #include "network.cpp"
 #include "helpers.cpp"
 #include "rng.cpp"
