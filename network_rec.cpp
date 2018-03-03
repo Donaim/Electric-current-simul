@@ -1,4 +1,5 @@
 #include "network_rec.h"
+#include <iostream>
 
 NetworkRec::NetworkRec(AtomCollection& net, const NCreatorParams& p) :  ConnectedNetwork(net, p) {
     atomsrec = (AtomRec**) atoms;
@@ -6,6 +7,8 @@ NetworkRec::NetworkRec(AtomCollection& net, const NCreatorParams& p) :  Connecte
     for (int i = 0; i < a_count; i++) {
         atomsrec[i]->net = this;
     }
+
+    std::cout << "Recurent network initialized!" << std::endl;
 }
 
 void NetworkRec::lap() {
