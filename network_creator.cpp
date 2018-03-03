@@ -18,11 +18,11 @@ public:
         Network init{};
         init.atoms = collection.source();
         init.a_count = collection.size();
-        ConnectedNetwork * re = new ConnectedNetwork{init, p.connector};
+        ConnectedNetwork& re = p.nconstructor.construct(init, p);
 
         collection.forget_and_alloc_new(10);
         
-        return *re;
+        return re;
     }
 
     ConnectedNetwork& create_solid_random_network(NCreatorParams& p) {

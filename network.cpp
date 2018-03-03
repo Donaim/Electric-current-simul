@@ -1,39 +1,23 @@
 #pragma once
 
 #include "atom.cpp"
+#include "network_creator_params.cpp"
+#include "nconnectors.h"
+#include "network.h"
 #include <iostream>
 #include <functional>
-
-#define MAX_CONNECTION_DIST 1.0f
-
-struct Network {
-    Atom ** atoms;
-    int a_count;
-    ~Network() { // should not destruct this
-        // std::cout << "Network destructed" << std::endl;
-        // for (int i = 0; i < a_count; i++) {
-        //     delete atoms[i];
-        // }
-        // delete[] atoms;
-    }
-};
-
-class Connector {
-public:
-    virtual void connect (const Network& net) const = 0;
-};
 
 
 class ConnectedNetwork {
     Atom ** const atoms;
     const int a_count;
 
-    static Atom ** connect(Network& net, const Connector& conn) {
+    static Atom ** connect(const Network& net, const Connector& conn) {
         conn.connect(net);
         return net.atoms;
     }
 public:
-    ConnectedNetwork(Network& net, const Connector& conn) :  atoms(connect(net, conn)), a_count(net.a_count) 
+    ConnectedNetwork(const Network& net, const NCreatorParams& p) :  atoms(connect(net, p.connector)), a_count(net.a_count) 
     { }
     void lap() const {
         for (int i = 0; i < a_count; i++ ) {
@@ -60,6 +44,16 @@ ConnectedNetwork::~ConnectedNetwork() {
     }
     delete[] atoms;
 }
+ostream& operator << (ostream& os, const ConnectedNetwork& o){
+    for (int i = 0; i < o.a_count; i++) {
+        os << *o.atoms[i] << ' ';
+    }
+    return os;
+}
 
 
-#include "printing.cpp"
+struct SimpleConstructor : NetworkConstructor {
+    virtual ConnectedNetwork& construct(const Network& base, const NCreatorParams& p) const override {
+        return *new ConnectedNetwork(base, p);
+    }
+};

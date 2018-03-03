@@ -1,6 +1,7 @@
 #pragma once
-#include "network.cpp"
+// #include "network.cpp"
 #include "helpers.cpp"
+#include "nconnectors.h"
 
 struct Shape { 
     virtual float area() const = 0;
@@ -14,16 +15,25 @@ struct RectangleF : public Shape {
     virtual float area() const override { return Width * Height; }
 };
 
+class ConnectedNetwork;
+class Network;
+struct NCreatorParams;
+struct NetworkConstructor {
+    virtual ConnectedNetwork& construct(const Network& base, const NCreatorParams& p) const = 0;
+};
 
 struct NCreatorParams {
     const Shape& sh;
     const Connector& connector;
-    NCreatorParams(const Shape& _sh, const Connector& c) : sh(_sh), connector(c) {}
+    const NetworkConstructor& nconstructor;
+    NCreatorParams(const Shape& _sh, const Connector& c, const NetworkConstructor& nc) 
+        : sh(_sh), connector(c), nconstructor(nc) {}
 
     virtual ~NCreatorParams() {}
 };
 
 struct DensityParams : NCreatorParams {
-    DensityParams(const Shape& sh, const Connector& c, float density) : NCreatorParams(sh, c), density(density) {}
+    DensityParams(const Shape& sh, const Connector& c, const NetworkConstructor& nc, float density) 
+        : NCreatorParams(sh, c, nc), density(density) {}
     float density;
 };

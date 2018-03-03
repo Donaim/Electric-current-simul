@@ -1,6 +1,9 @@
+#pragma once
+
 #include "atom.cpp"
-#include "network.cpp"
 #include "rng.cpp"
+#include "network.h"
+#include "nconnectors.h"
 
 namespace connectors {
     struct Intuitive : Connector {

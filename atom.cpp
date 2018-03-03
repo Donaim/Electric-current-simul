@@ -90,4 +90,16 @@ Atom::~Atom() {
     delete[] neighbors;
 }
 
-#include "printing.cpp"
+#include <iostream>
+using std::ostream;
+
+ostream& operator << (ostream& os, const Atom& o){
+    if (o.charge() < 0) 
+    { os << '-'; }
+    else 
+    { os << '+';}
+
+    os << '(' << absi(o.charge()) << ')';
+
+    return os;
+}
