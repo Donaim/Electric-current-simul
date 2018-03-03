@@ -8,7 +8,8 @@ At this stage project is under development. Therefore there is not much things y
 - Discover plenty of bugs.
 
 # Metric
-Distance:
-
+- Distance  
     Basic measurment unit is MAXIMAL_CONNECTION_DIST which is set to be 1.0
 
+# To do
+- change atom random selection - doesn't have to be scaled to positives only
