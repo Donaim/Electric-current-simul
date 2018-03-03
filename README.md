@@ -13,3 +13,4 @@ At this stage project is under development. Therefore there is not much things y
 
 # To do
 - change atom random selection - doesn't have to be scaled to positives only
+- split definitions and declarations. code looks really messy
